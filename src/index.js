@@ -45,6 +45,29 @@ app.get('/usuarios/:id', async (req, res) => {
 
 })
 
+app.patch('/usuarios/:id', async (req, res) => {
+    const updates = Object.keys(req.body);
+    console.log(updates);
+    const allowedUpdates = ['nombre', 'email', 'edad', 'password'];
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+
+    if(!isValidOperation){
+        return res.status(400).send({ error: 'Actualizacion invalida'});
+    }
+
+    try {
+        const usuario = await Usuario.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true});
+        
+        if (!usuario){
+            return res.status(404).send();
+        }
+
+        res.send(usuario);
+    } catch (e) {
+        res.status(400).send(e);
+    }
+})
+
 app.post('/tareas', async (req, res) => {
     const tarea = new Tarea(req.body);
 
@@ -81,6 +104,27 @@ app.get('/tareas/:id', async (req, res) => {
         res.status(500).send();
     }
 
+})
+
+app.patch('/tareas/:id', async (req,res) => {
+    const updates = Object.keys(req.body);
+    const allowedUpdates = ['descripcion', 'completado'];
+    const isValidOperation = updates.every((update)=> allowedUpdates.includes(update));
+
+    if(!isValidOperation){
+        return res.status(404).send({ error: 'Actualizacion invalida'});
+    }
+
+    try{
+        const tarea = await Tarea.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true })
+
+        if(!tarea){
+            return res.status(404).send();
+        }
+        res.send(tarea);
+    }catch (e){
+        res.status(500).send(e);
+    }
 })
 
 app.listen(port, () => {
