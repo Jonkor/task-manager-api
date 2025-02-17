@@ -17,7 +17,7 @@ app.post('/usuarios', async (req, res) => {
     }catch (e) {
         res.status(400).send(e);        
     }    
-})
+});
 
 app.get('/usuarios', async (req, res) => {
 
@@ -28,7 +28,7 @@ app.get('/usuarios', async (req, res) => {
         res.status(500).send();
     }
     
-})
+});
 
 app.get('/usuarios/:id', async (req, res) => {
     const _id = req.params.id;
@@ -43,7 +43,7 @@ app.get('/usuarios/:id', async (req, res) => {
         res.status(500).send();
     }
 
-})
+});
 
 app.patch('/usuarios/:id', async (req, res) => {
     const updates = Object.keys(req.body);
@@ -66,7 +66,21 @@ app.patch('/usuarios/:id', async (req, res) => {
     } catch (e) {
         res.status(400).send(e);
     }
-})
+});
+
+app.delete('/usuarios/:id', async (req,res) => {
+    try {
+        const usuario = await Usuario.findByIdAndDelete(req.params.id);
+
+        if (!usuario) {
+            return res.status(404).send();
+        }
+
+        res.send(usuario);
+    } catch (e) {
+        res.status(500).send(e);
+    }
+});
 
 app.post('/tareas', async (req, res) => {
     const tarea = new Tarea(req.body);
@@ -75,10 +89,10 @@ app.post('/tareas', async (req, res) => {
         await tarea.save();
         res.status(201).send(tarea);
     }catch (e){
-        res.status(400).send();
+        res.status(400).send(e);
     }
 
-})
+});
 
 app.get('/tareas', async (req, res) => {
 
@@ -86,10 +100,10 @@ app.get('/tareas', async (req, res) => {
         const tareas = await Tarea.find({});
         res.send(tareas);
     }catch (e){
-        res.status(500).send();
+        res.status(500).send(e);
     }
 
-})
+});
 
 app.get('/tareas/:id', async (req, res) => {
     const _id = req.params.id;
@@ -101,10 +115,10 @@ app.get('/tareas/:id', async (req, res) => {
         }
         res.send(tarea);
     } catch (e){
-        res.status(500).send();
+        res.status(500).send(e);
     }
 
-})
+});
 
 app.patch('/tareas/:id', async (req,res) => {
     const updates = Object.keys(req.body);
@@ -125,8 +139,21 @@ app.patch('/tareas/:id', async (req,res) => {
     }catch (e){
         res.status(500).send(e);
     }
-})
+});
+
+app.delete('/tareas/:id', async (req, res) => {
+    try {
+        const tarea = await Tarea.findByIdAndDelete(req.params.id);
+
+        if (!tarea) {
+            return res.status(404).send();
+        }
+        res.send(tarea);
+    } catch (e) {
+        res.status(500).send(e);    
+    }
+});
 
 app.listen(port, () => {
     console.log('Server is up on port ' + port);
-})
+});
