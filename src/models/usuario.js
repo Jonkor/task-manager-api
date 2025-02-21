@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator'); 
-const bcrypt = require('bcryptjs'); 
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken'); 
 
 const usuarioSchema = new mongoose.Schema({
     nombre: {
@@ -39,8 +40,24 @@ const usuarioSchema = new mongoose.Schema({
                 throw new Error('no se puede poner password como contrasena');
             }
         }
-    }
+    },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 });
+
+usuarioSchema.methods.generateAuthToken = async function () {
+    const usuario = this;
+    const token = jwt.sign({_id: usuario.id.toString() }, 'thisismynewcourse');
+    
+    usuario.tokens = usuario.tokens.concat({ token });
+    await usuario.save();
+
+    return token;
+}
 
 usuarioSchema.statics.findByCredentials = async (email, password) => {
     const usuario = await Usuario.findOne({ email: email });

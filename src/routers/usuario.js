@@ -1,5 +1,6 @@
 const express = require('express');
 const Usuario = require('../models/usuario');
+const auth = require('../middleware/auth');
 const router = new express.Router();
 
 router.post('/usuarios', async (req, res) => {
@@ -7,7 +8,8 @@ router.post('/usuarios', async (req, res) => {
 
     try {
         await usuario.save();
-        res.status(201).send(usuario);
+        const token = await usuario.generateAuthToken();
+        res.status(201).send({usuario, token});
     }catch (e) {
         res.status(400).send(e);        
     }    
@@ -16,13 +18,14 @@ router.post('/usuarios', async (req, res) => {
 router.post('/usuarios/login', async (req, res) => {
     try {
         const usuario = await Usuario.findByCredentials(req.body.email, req.body.password);
-        res.send(usuario);
+        const token = await usuario.generateAuthToken();
+        res.send({usuario, token });
     } catch (e) {
         res.status(400).send();
     }
 });
 
-router.get('/usuarios', async (req, res) => {
+router.get('/usuarios', auth, async (req, res) => {
 
     try {
         const usuarios = await Usuario.find({});
@@ -75,7 +78,7 @@ router.patch('/usuarios/:id', async (req, res) => {
     }
 });
 
-router.delete('/usuarios/:id', async (req,res) => {
+router.delete('/usuarios/:id', auth,async (req,res) => {
     try {
         const usuario = await Usuario.findByIdAndDelete(req.params.id);
 
