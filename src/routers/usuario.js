@@ -48,15 +48,8 @@ router.post('/usuarios/logoutAll', auth, async (req, res) => {
     }
 });
 
-router.get('/usuarios', auth, async (req, res) => {
-
-    try {
-        const usuarios = await Usuario.find({});
-        res.send(usuarios);
-    }catch (e){
-        res.status(500).send();
-    }
-    
+router.get('/usuarios/yo', auth, async (req, res) => {
+    res.send(req.usuario);    
 });
 
 router.get('/usuarios/:id', async (req, res) => {
@@ -76,7 +69,6 @@ router.get('/usuarios/:id', async (req, res) => {
 
 router.patch('/usuarios/:id', async (req, res) => {
     const updates = Object.keys(req.body);
-    console.log(updates);
     const allowedUpdates = ['nombre', 'email', 'edad', 'password'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 

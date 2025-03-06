@@ -41,7 +41,7 @@ router.get('/tareas/:id', async (req, res) => {
 });
 
 router.patch('/tareas/:id', async (req,res) => {
-    const updates = Object.keys(req.body);
+    const updates = Object.keys(req.body); //array of strings
     const allowedUpdates = ['descripcion', 'completado'];
     const isValidOperation = updates.every((update)=> allowedUpdates.includes(update));
 
