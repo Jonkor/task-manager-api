@@ -49,6 +49,16 @@ const usuarioSchema = new mongoose.Schema({
     }]
 });
 
+usuarioSchema.methods.toJSON = function () { //here we hide the user's private data
+    const usuario = this;
+    const usuarioObject = usuario.toObject();
+
+    delete usuarioObject.password;
+    delete usuarioObject.tokens;
+
+    return usuarioObject;
+}
+
 usuarioSchema.methods.generateAuthToken = async function () {
     const usuario = this;
     const token = jwt.sign({_id: usuario.id.toString() }, 'thisismynewcourse');
