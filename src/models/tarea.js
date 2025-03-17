@@ -9,6 +9,11 @@ const Tarea = mongoose.model('Tarea', {
     completado: {
         type: Boolean,
         default: false
+    },
+    propietario: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Usuario'
     }
 })
 

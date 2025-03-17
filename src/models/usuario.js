@@ -49,6 +49,12 @@ const usuarioSchema = new mongoose.Schema({
     }]
 });
 
+usuarioSchema.virtual('tareas', {
+    ref: 'Tarea',
+    localField: '_id',
+    foreignField: 'propietario'
+});
+
 usuarioSchema.methods.toJSON = function () { //here we hide the user's private data
     const usuario = this;
     const usuarioObject = usuario.toObject();
