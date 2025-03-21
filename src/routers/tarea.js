@@ -19,9 +19,17 @@ router.post('/tareas', auth, async (req, res) => {
 });
 
 router.get('/tareas', auth, async (req, res) => {
+    const match = {};
+
+    if (req.query.completado) {
+        match.completado = req.query.completado === 'true';
+    }
 
     try {
-        await req.usuario.populate('tareas');
+        await req.usuario.populate({
+            path: 'tareas',
+            match
+        });
         res.send(req.usuario.tareas);
     }catch (e){
         res.status(500).send(e);
