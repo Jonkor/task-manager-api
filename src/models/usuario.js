@@ -67,6 +67,7 @@ usuarioSchema.methods.toJSON = function () { //here we hide the user's private d
 
     delete usuarioObject.password;
     delete usuarioObject.tokens;
+    delete usuarioObject.avatar;
 
     return usuarioObject;
 }
